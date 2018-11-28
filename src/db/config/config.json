@@ -25,6 +25,6 @@
     "dialect": "postgres",
     "logging": false,
     "operatorsAliases": false,
-    "use_env_variable": "postgresql-opaque-18057"
+    "use_env_variable": "DATABASE_URL"
   }
 }
