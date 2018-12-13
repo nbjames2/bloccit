@@ -44,5 +44,14 @@ module.exports = {
                 res.redirect(`/topics`);
             }
         });
+    },
+    show(req, res, next){
+        flairQueries.getFlair(req.params.id, (err, flair) => {
+            if(err || flair == null){
+                res.redirect(404, "/");
+            } else {
+                res.render("flair/show", {flair});
+            }
+        });
     }
 }

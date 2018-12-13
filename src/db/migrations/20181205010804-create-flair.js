@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false
       },
       colour: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {

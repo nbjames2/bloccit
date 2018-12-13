@@ -7,5 +7,6 @@ router.post("/topics/:topicId/flair/create", flairController.create);
 router.post("/topics/:topicId/flair/:id/destroy", flairController.destroy);
 router.get("/topics/:topicId/flair/:id/edit", flairController.edit);
 router.post("/topics/:topicId/flair/:id/update", flairController.update);
+router.get("/topics/:topicId/flair/:id", flairController.show);
 
 module.exports = router;

@@ -3,31 +3,40 @@ const server = require("../../src/server");
 const base = "http://localhost:3000/topics/";
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
+const Flair = require("../../src/db/models").Flair;
 
 describe("routes : topics", () => {
 
     beforeEach((done) => {
         this.topic;
+        this.flair;
         sequelize.sync({force: true}).then((res) => {
   
          Topic.create({
            title: "JS Frameworks",
            description: "There is a lot of them"
-         },
-         console.log("created entry")
-         )
-          .then((topic) => {
+         })
+         .then((topic) => {
             this.topic = topic;
-            done();
-          })
-          .catch((err) => {
-            console.log(err);
-            done();
+            Flair.create({
+              name: "wow",
+              colour: "blue",
+              topicId: this.topic.id
+            })
+            .then((flair) => {
+              this.flair = flair;
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            })
+            
           });
-  
+          
         });
   
-      });
+    });
 
   describe("GET /topics", () => {
 
