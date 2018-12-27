@@ -12,6 +12,10 @@ module.exports = class ApplicationPolicy {
      _isAdmin() {
        return this.user && this.user.role == "admin";
      }
+
+     _isMember() {
+       return this.user;
+     }
    
      new() {
        return this.user != null;
