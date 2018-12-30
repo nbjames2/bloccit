@@ -159,6 +159,40 @@ describe("routes : comments", () => {
 
         describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
 
+            it("should not let a user delete another user's comments", (done) => {
+                User.create({
+                    email: "norm@example.com",
+                    password: "987654"
+                })
+                .then((user) => {
+                    request.get({
+                        url: "http://localhost:3000/auth/fake",
+                        form: {
+                            role: "member",
+                            userId: user.id
+                        }
+                    }, (err, res, body) => {
+                        Comment.all()
+                        .then((comments) => {
+                            const commentCountBeforeDelete = comments.length;
+                            expect(commentCountBeforeDelete).toBe(1);
+                            request.post(
+                                `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+                                (err, res, body) => {
+                                    expect(res.statusCode).toBe(401);
+                                    Comment.all()
+                                    .then((comments) => {
+                                        expect(err).toBeNull();
+                                        expect(comments.length).toBe(commentCountBeforeDelete);
+                                        done();
+                                    });
+                                }
+                            );
+                        });
+                    });
+                });
+            });
+
             it("should delete the comment with the associated ID", (done) => {
                 Comment.all()
                 .then((comments) => {
@@ -180,4 +214,50 @@ describe("routes : comments", () => {
             });
         });
     });
+
+    describe("Admin user performing CRUD operations on comments", () => {
+
+        beforeEach((done) => {
+            User.create({
+                email: "buddytheelf@example.com",
+                password: "hohoho"
+            })
+            .then((user) => {
+                this.user = user;
+                request.get({
+                    url: "http://localhost:3000/auth/fake",
+                    form: {
+                        role: "admin",
+                        userId: this.user.id
+                    }
+                }, (err, res, body) => {
+                    done();
+                });
+            })
+            
+        });
+
+        describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+
+            it("should allow admin users to delete any user's comment", (done) => {
+                Comment.all()
+                .then((comments) => {
+                    const commentCountBeforeDelete = comments.length;
+                    expect(commentCountBeforeDelete).toBe(1);
+                    request.post(
+                        `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+                        (err, res, body) => {
+                            expect(res.statusCode).toBe(302);
+                            Comment.all()
+                            .then((comments) => {
+                                expect(err).toBeNull();
+                                expect(comments.length).toBe(commentCountBeforeDelete -1);
+                                done();
+                            });
+                        }
+                    );
+                })
+            })
+        })
+    })
 });
