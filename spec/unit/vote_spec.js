@@ -69,7 +69,7 @@ describe("Vote", () => {
             })
             .then((vote) => {
                 expect(vote.value).toBe(1);
-                expect(bote.postId).toBe(this.post.id);
+                expect(vote.postId).toBe(this.post.id);
                 expect(vote.userId).toBe(this.user.id);
                 done();
             })
@@ -107,6 +107,21 @@ describe("Vote", () => {
             .catch((err) => {
                 expect(err.message).toContain("Vote.userId cannot be null");
                 expect(err.message).toContain("Vote.postId cannot be null");
+                done();
+            });
+        });
+
+        it("should not create a vote with a value of more than 1", (done) => {
+            Vote.create({
+                value: 2,
+                userId: this.user.id,
+                postId: this.post.id
+            })
+            .then((vote) => {
+                done();
+            })
+            .catch((err) => {
+                expect(err.message).toContain("Validation isIn on value failed")
                 done();
             });
         });

@@ -16,7 +16,7 @@
         <h1><%= post.title %></h1>
       </div>
       
-      <% if(currentUser && currentUser.isAdmin() || currentUser && currentUser.isOwner()) { %>
+      <% if(currentUser && currentUser.isAdmin() || currentUser && (currentUser.id === post.userId)) { %>
         <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>/edit" class="btn btn-warning">Edit</a>
           <form style="display:initial" action="/topics/<%= post.topicId %>/posts/<%= post.id %>/destroy" method="post">
             <button type="submit" class="btn btn-danger">Delete</button>
