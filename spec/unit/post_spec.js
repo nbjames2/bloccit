@@ -141,26 +141,4 @@ describe("Post", () => {
             });
         });
     });
-
-    describe("#getPoints()", () => {
-        
-        it("should return the sum of votes on a post", (done) => {
-            Vote.create({
-            value: 1,
-            userId: this.user.id,
-            postId: this.post.id
-            })
-            .then((res) => {
-                this.post.getPoints()
-                .then((total) => {
-                    expect(total).toBe(1);
-                    done();
-                })
-                .catch((err) => {
-                    console.log(err);
-                    done();
-                });
-            });
-        });
-    });
 });
