@@ -125,30 +125,6 @@ describe("routes : votes", () => {
                         done();
                     });
                 });
-            });
-
-            it("should not allow 2 votes to be created by one user on the same post", (done) => {
-                const options = {
-                    url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
-                };
-                request.get(options, (err, res, body) => {
-                    request.get(options, (err, res, body) => {
-                        Vote.findAll({
-                            where: {
-                                userId: this.user.id,
-                                postId: this.post.id
-                            }
-                        })
-                        .then((votes) => {
-                            expect(votes.length).toBe(1);
-                            done();
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            done();
-                        });
-                    });
-                });
             });           
         });
 
