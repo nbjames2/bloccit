@@ -145,21 +145,103 @@ describe("Post", () => {
     describe("#getPoints()", () => {
         
         it("should return the sum of votes on a post", (done) => {
-            Vote.create({
-            value: 1,
-            userId: this.user.id,
-            postId: this.post.id
+            Post.create({
+                title: "testing this silly thing",
+                body: "please work for me!",
+                topicId: this.topic.id,
+                userId: this.user.id,
+                votes: [{
+                    value: 1,
+                    userId: this.user.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
             })
             .then((res) => {
-                this.post.getPoints()
-                .then((total) => {
-                    expect(total).toBe(1);
-                    done();
-                })
-                .catch((err) => {
-                    console.log(err);
-                    done();
-                });
+                this.post = res;
+                this.vote = res.votes[0];
+                let total = this.post.getPoints()
+                expect(total).toBe(1);
+                done();
+            })
+            .catch((err) => {
+                console.log(err);
+                done();
+            });
+        });
+    });
+
+    describe("#hasUpvoteFor()", () => {
+
+        it("should return true if the associated user has an upvote for this post", (done) => {
+            Post.create({
+                title: "testing this silly thing",
+                body: "please work for me!",
+                topicId: this.topic.id,
+                userId: this.user.id,
+                votes: [{
+                    value: 1,
+                    userId: this.user.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
+            })
+            .then((post) => {
+               this.post = post;
+               this.post.hasUpvoteFor(this.user.id, (err, res) => {
+                if(err){
+                  console.log(err);
+                } else {
+                  expect(res).toBe(true);
+                }
+                done();
+              });
+            })
+            .catch((err) => {
+                console.log(err);
+                done();
+            });
+        });
+    });
+
+    describe("#hasDownvoteFor()", () => {
+
+        it("should return true if the associated user has a downvote for this post", (done) => {
+            Post.create({
+                title: "testing this silly thing",
+                body: "please work for me!",
+                topicId: this.topic.id,
+                userId: this.user.id,
+                votes: [{
+                    value: -1,
+                    userId: this.user.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
+            })
+            .then((post) => {
+               this.post = post;
+               this.post.hasDownvoteFor(this.user.id, (err, res) => {
+                if(err){
+                  console.log(err);
+                } else {
+                  expect(res).toBe(true);
+                }
+                done();
+              });
+            })
+            .catch((err) => {
+                console.log(err);
+                done();
             });
         });
     });

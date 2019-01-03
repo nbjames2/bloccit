@@ -48,5 +48,51 @@ module.exports = (sequelize, DataTypes) => {
       .reduce((prev, next) => {return prev + next });
   };
   
+  Post.prototype.hasUpvoteFor = function(userId, callback){
+    return this.getVotes({
+      where: {
+        userId: userId,
+        postId: this.id
+      }
+    })
+    .then((votes) => {
+      if(votes.length !== 1){
+        callback(null, false);
+      } else {
+        if(votes[0].value === 1){
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      }
+    })
+    .catch((err) => {
+      callback(err);
+    })
+  }
+
+  Post.prototype.hasDownvoteFor = function(userId, callback){
+    return this.getVotes({
+      where: {
+        userId: userId,
+        postId: this.id
+      }
+    })
+    .then((votes) => {
+      if(votes.length !== 1){
+        callback(null, false);
+      } else {
+        if(votes[0].value === -1){
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      }
+    })
+    .catch((err) => {
+      callback(err);
+    })
+  }
+
   return Post;
-};
+}
