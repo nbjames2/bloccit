@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
           model: models.Post
         }],
         where: { userId: userId},
-
         limit: 5,
         order: [["createdAt", "DESC"]]
       }
